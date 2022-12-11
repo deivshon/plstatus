@@ -44,11 +44,12 @@ void failure(char *err) {
 }
 
 void init() {
+    sem_init(&status_mutex, 0, 1);
+
     for(int i = 0; components[i].command != NULL; i++) {
         components[i].current_result[0] = '\0';
         pthread_create(&(components[i].thread), NULL, (void *) component_thread, &components[i]);
     }
-    sem_init(&status_mutex, 0, 1);
 }
 
 void get_status() {
