@@ -63,19 +63,21 @@ void get_status() {
 
 void component_thread(void *component_ptr) {
     Component *component = (Component *) component_ptr;
+    unsigned int period = component->period < __UINT32_MAX__ / 1e3 ? \
+                          component->period * 1e3 : __UINT32_MAX__;
 
     loop {
         char buf[MAX_RESULT_LEN];
         get_component_output(buf, component);
 
-        // Strip newline
+        // Remove newline
         buf[strcspn(buf, "\n")] = 0;
 
         sem_wait(&status_mutex);
         strncpy(component->current_result, buf, MAX_RESULT_LEN);
         sem_post(&status_mutex);
 
-        usleep(component->period * 1000);
+        usleep(period);
     }
 }
 
