@@ -1,8 +1,9 @@
 #include <stddef.h>
 #include "plstatus.h"
 
-#define MAX_LEN 2048
+#define separator(str) {"printf", {"printf", str, NULL}, __UINT32_MAX__}
 
+#define MAX_LEN 2048
 #define UPDATE_PERIOD 100
 
 /* 
@@ -18,9 +19,9 @@
 */
 Component components[] = {
     {"date", {"date", "+%S", NULL}, 100},
-    {"echo", {"echo", " | ", NULL}, 10000},
+    separator(" | "),
     {"date", {"date", "+%S", NULL}, 500},
-    {"echo", {"echo", " | ", NULL}, 10000},
+    separator(" | "),
     {"date", {"date", "+%S", NULL}, 2500},
     NULL
 };
