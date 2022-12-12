@@ -1,4 +1,4 @@
-plstatus: plstatus.c config.h
+plstatus: plstatus.c plstatus.h config.h
 	gcc -o $@ -lX11 -lpthread $<
 
 clean:
