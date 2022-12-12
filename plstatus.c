@@ -5,19 +5,30 @@
 #include <semaphore.h>
 #include <pthread.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include <X11/Xlib.h>
 
 #include "plstatus.h"
 #include "config.h"
 
-#define loop while(1)
+extern Component components[];
 
 Display *display;
 
 char status[MAX_LEN];
 sem_t status_mutex;
 
-extern Component components[];
+void termination_handler() {
+    for(int i = 0; components[i].command != NULL; i++) {
+        pthread_kill(components[i].thread, SIGUSR1);
+        pthread_join(components[i].thread, NULL);
+    }
+
+	if(XCloseDisplay(display) < 0)
+		failure("Could not close display\n");
+
+    exit(EXIT_SUCCESS);
+}
 
 int main() {
 	display = XOpenDisplay(NULL);
@@ -26,7 +37,13 @@ int main() {
 
     init();
 
-    loop {
+    struct sigaction action = {0};
+    action.sa_handler = termination_handler;
+
+    sigaction(SIGINT, &action, NULL);
+    sigaction(SIGTERM, &action, NULL);
+
+    while(True) {
         get_status();
 
         XStoreName(display, DefaultRootWindow(display), status);
@@ -34,9 +51,6 @@ int main() {
 
         usleep(UPDATE_PERIOD * 1000);
     }
-
-	if(XCloseDisplay(display) < 0)
-		failure("Could not close display\n");
 }
 
 void failure(char *err) {
@@ -62,12 +76,21 @@ void get_status() {
     sem_post(&status_mutex);
 }
 
+void component_stop() {
+    pthread_exit(EXIT_SUCCESS);
+}
+
 void component_thread(void *component_ptr) {
     Component *component = (Component *) component_ptr;
     unsigned int period = component->period < __UINT32_MAX__ / 1e3 ? \
                           component->period * 1e3 : __UINT32_MAX__;
+    
+    struct sigaction action = {0};
+    action.sa_handler = component_stop;
 
-    loop {
+    sigaction(SIGUSR1, &action, NULL);
+
+    while(True) {
         char buf[MAX_RESULT_LEN];
         get_component_output(buf, component);
         wait(NULL);
