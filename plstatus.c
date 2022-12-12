@@ -4,6 +4,7 @@
 #include <string.h>
 #include <semaphore.h>
 #include <pthread.h>
+#include <sys/wait.h>
 #include <X11/Xlib.h>
 
 #include "plstatus.h"
@@ -69,6 +70,7 @@ void component_thread(void *component_ptr) {
     loop {
         char buf[MAX_RESULT_LEN];
         get_component_output(buf, component);
+        wait(NULL);
 
         // Remove newline
         buf[strcspn(buf, "\n")] = 0;
@@ -109,7 +111,7 @@ void get_component_output(char *temp_dest, Component *component) {
             // Sets the byte after the last one read to '\0', terminating the string
             buf[c] = '\0';
 
-            if(strlen(temp_dest) + strlen(buf) >= (size_t) MAX_RESULT_LEN)
+            if(strlen(temp_dest) + strlen(buf) >= (size_t) (MAX_RESULT_LEN - 1))
                 break;
 
             strcat(temp_dest, buf);
