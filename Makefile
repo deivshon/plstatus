@@ -10,7 +10,7 @@ all: plstatus
 plstatus: plstatus.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $<
 
-%.o: %.c %.h
+plstatus.o: plstatus.c plstatus.h config.h
 	$(CC) -c -o $@ $(CFLAGS) $<
 
 install: plstatus
