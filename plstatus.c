@@ -26,6 +26,8 @@ void termination_handler() {
         pthread_join(components[i].thread, NULL);
     }
 
+    XStoreName(display, DefaultRootWindow(display), NULL);
+    XFlush(display);
 	if(XCloseDisplay(display) < 0)
 		failure("Could not close display\n");
 
