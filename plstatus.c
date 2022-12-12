@@ -28,16 +28,16 @@ void termination_handler() {
 
     XStoreName(display, DefaultRootWindow(display), NULL);
     XFlush(display);
-	if(XCloseDisplay(display) < 0)
-		failure("Could not close display\n");
+    if(XCloseDisplay(display) < 0)
+        failure("Could not close display\n");
 
     exit(EXIT_SUCCESS);
 }
 
 int main() {
-	display = XOpenDisplay(NULL);
-	if(display == NULL)
-		failure("Could not open display\n");
+    display = XOpenDisplay(NULL);
+    if(display == NULL)
+    failure("Could not open display\n");
 
     init();
 
