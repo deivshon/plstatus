@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <semaphore.h>
-#include <pthread.h>
 #include <sys/wait.h>
+#include <pthread.h>
+#include <semaphore.h>
 #include <signal.h>
+#include <string.h>
 #include <X11/Xlib.h>
 
 #include "plstatus.h"
 #include "config.h"
+
+#define until_components_end(index) components[index].command != NULL
 
 extern Component components[];
 
@@ -19,7 +21,7 @@ char status[MAX_LEN + 1];
 sem_t status_mutex;
 
 void termination_handler() {
-    for(int i = 0; components[i].command != NULL; i++) {
+    for(int i = 0; until_components_end(i); i++) {
         pthread_kill(components[i].thread, SIGUSR1);
         pthread_join(components[i].thread, NULL);
     }
@@ -61,7 +63,7 @@ void failure(char *err) {
 void init() {
     sem_init(&status_mutex, 0, 1);
 
-    for(int i = 0; components[i].command != NULL; i++) {
+    for(int i = 0; until_components_end(i); i++) {
         components[i].current_result[0] = '\0';
         pthread_create(&(components[i].thread), NULL, (void *) component_thread, &components[i]);
     }
@@ -69,10 +71,12 @@ void init() {
 
 void get_status() {
     sem_wait(&status_mutex);
+
     status[0] = '\0';
-    for(int i = 0; components[i].command != NULL; i++) {
+    for(int i = 0; until_components_end(i); i++) {
         strncat(status, components[i].current_result, MAX_LEN - strlen(status));
     }
+
     sem_post(&status_mutex);
 }
 
@@ -82,9 +86,9 @@ void component_stop() {
 
 void component_thread(void *component_ptr) {
     Component *component = (Component *) component_ptr;
-    unsigned int period = component->period < __UINT32_MAX__ / 1e3 ? \
-                          component->period * 1e3 : __UINT32_MAX__;
-    
+    unsigned int period = component->period < __UINT32_MAX__ / 1000 ? \
+                          component->period * 1000 : __UINT32_MAX__;
+
     struct sigaction action = {0};
     action.sa_handler = component_stop;
 
@@ -109,7 +113,7 @@ void component_thread(void *component_ptr) {
 void get_component_output(char *dest, Component *component) {
     int piped[2];
     if(pipe(piped) == -1) {
-        exit(EXIT_FAILURE);
+        failure("Couldn't create pipe\n");
     }
 
     if(fork() == 0) {
@@ -119,7 +123,7 @@ void get_component_output(char *dest, Component *component) {
         close(piped[1]);
 
         execvp(component->command, component->arguments);
-        exit(EXIT_FAILURE);
+        failure("Exec failed\n");
     }
     else {
         dest[0] = '\0';
