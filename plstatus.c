@@ -15,7 +15,7 @@ extern Component components[];
 
 Display *display;
 
-char status[MAX_LEN];
+char status[MAX_LEN + 1];
 sem_t status_mutex;
 
 void termination_handler() {
@@ -106,7 +106,7 @@ void component_thread(void *component_ptr) {
     }
 }
 
-void get_component_output(char *temp_dest, Component *component) {
+void get_component_output(char *dest, Component *component) {
     int piped[2];
     if(pipe(piped) == -1) {
         exit(EXIT_FAILURE);
@@ -122,9 +122,11 @@ void get_component_output(char *temp_dest, Component *component) {
         exit(EXIT_FAILURE);
     }
     else {
-        temp_dest[0] = '\0';
+        dest[0] = '\0';
 
-        int c = 0; // Bytes read into buffer each time
+        // Bytes read into buffer each time
+        int c = 0;
+
         char buf[1024];
         buf[0] = '\0';
 
@@ -134,10 +136,10 @@ void get_component_output(char *temp_dest, Component *component) {
             // Sets the byte after the last one read to '\0', terminating the string
             buf[c] = '\0';
 
-            if(strlen(temp_dest) + strlen(buf) >= (size_t) (MAX_RESULT_LEN - 1))
-                break;
+            strncat(dest, buf, MAX_RESULT_LEN - strlen(dest));
 
-            strcat(temp_dest, buf);
+            if(strlen(dest) + strlen(buf) >= (size_t) MAX_RESULT_LEN)
+                break;
         }
         close(piped[0]);
     }
