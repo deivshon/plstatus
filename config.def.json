@@ -1,0 +1,24 @@
+{
+    "max-status-length": 2048,
+    "update-period": 500,
+    "sep": " | ",
+    "blocks": [
+        {
+            "command": "date",
+            "args": ["+%S"],
+            "period": 100
+        },
+        "sep",
+                {
+            "command": "date",
+            "args": ["+%S"],
+            "period": 1000
+        },
+        "sep",
+        {
+            "command": "date",
+            "args": ["+%S"],
+            "period": 2500
+        }
+    ]
+}

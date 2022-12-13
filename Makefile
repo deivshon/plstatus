@@ -5,13 +5,19 @@ LDFLAGS = -lX11 -lpthread
 
 INSTALL_PATH = /usr/local/bin
 
-all: plstatus
+all: config.h plstatus
 
 plstatus: plstatus.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $<
 
 plstatus.o: plstatus.c plstatus.h config.h
 	$(CC) -c -o $@ $(CFLAGS) $<
+
+config.h: config.json
+	python3 make-config.py
+
+config.json: config.def.json
+	cp config.def.json config.json
 
 install: plstatus
 	mkdir -p $(INSTALL_PATH)
@@ -22,6 +28,6 @@ uninstall:
 	rm -f $(INSTALL_PATH)/plstatus
 
 clean:
-	rm plstatus *.o
+	rm plstatus config.h *.o
 
 .PHONY: all install uninstall clean
