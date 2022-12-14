@@ -34,7 +34,7 @@ def build_component(component):
     command = component[COMMAND]
     period = component[PERIOD]
 
-    component_string = f"\t{O} \"{command}\", {O}\"{command}\", "
+    component_string = f"\t{O} \"{command}\", {O} \"{command}\", "
 
     if ARGUMENTS in component:
         if isinstance(component[ARGUMENTS], str):
@@ -68,7 +68,7 @@ configString += f"#define UPDATE_PERIOD {config['update-period']}\n"
 
 configString += \
 """
-#define separator(str) {"printf", {"printf", str, NULL}, __UINT32_MAX__}
+#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__}
 
 Component components[] = {
 """
