@@ -16,7 +16,7 @@ plstatus.o: plstatus.c plstatus.h config.h
 config.h: config.json
 	python3 make-config.py
 
-config.json: config.def.json
+config.json: config.def.json make-config.py
 	cp config.def.json config.json
 
 install: plstatus
