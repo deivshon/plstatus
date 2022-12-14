@@ -13,10 +13,10 @@ plstatus: plstatus.o
 plstatus.o: plstatus.c plstatus.h config.h
 	$(CC) -c -o $@ $(CFLAGS) $<
 
-config.h: config.json
+config.h: config.json make-config.py
 	python3 make-config.py
 
-config.json: config.def.json make-config.py
+config.json: config.def.json
 	cp config.def.json config.json
 
 install: plstatus
