@@ -2,6 +2,7 @@ import json
 import sys
 import os
 
+
 O = "{"
 C = "}"
 
@@ -20,6 +21,31 @@ BLOCKS = "blocks"
 CONFIG_NEEDED = (MAX_STATUS_LENGTH, UPDATE_PERIOD, BLOCKS)
 COMPONENT_NEEDED = (COMMAND, PERIOD)
 
+
+def failure(err):
+    print(f"Error: {err}", file = sys.stderr)
+    sys.exit(1)
+
+def get_command_path(command):
+    command = os.path.expanduser(command)
+
+    # Command was given in the form of a path to file
+    if command == os.path.abspath(command):
+        if os.path.isfile(command):
+            return command
+        else:
+            failure(f"Command \"{command}\" does not exist")
+
+    # Command was given in the form of the name of the destination file,
+    # so it needs to be searched within PATH
+    for path in os.environ["PATH"].split(":"):
+        if path == "": continue
+
+        if os.path.isfile(path + f"/{command}"):
+            return os.path.join(path, command)
+
+    failure(f"Command \"{command}\" does not exist within any of the folders in PATH")
+
 def load_config(configPath):
     with open(configPath, "r") as f:
         try:
@@ -29,17 +55,13 @@ def load_config(configPath):
 
     return config
 
-def failure(err):
-    print(f"Error: {err}", file = sys.stderr)
-    sys.exit(1)
-
 def build_component(component):
     # Check component validity
     for field in COMPONENT_NEEDED:
         if field not in component:
             failure(f"Needed field \"{field}\" not found in component:\n{json.dumps(component, indent = 2)}")
 
-    command = component[COMMAND]
+    command = get_command_path(component[COMMAND])
     period = component[PERIOD]
 
     component_string = f"\t{O} \"{command}\", {O} \"{command}\", "
@@ -57,6 +79,12 @@ def build_component(component):
 
 build_separator = lambda s: f"\tseparator(\"{s}\"),\n"
 
+
+####################
+# Load config.json #
+####################
+
+
 if os.path.isfile(CONFIG):
     config = load_config(CONFIG)
 else:
@@ -65,6 +93,12 @@ else:
 for field in CONFIG_NEEDED:
     if field not in config:
             failure(f"Needed field \"{field}\" not found in config")
+
+
+###########################
+# Create config.h content #
+###########################
+
 
 configString = \
 """#include <stddef.h>
@@ -92,6 +126,12 @@ for component in config["blocks"]:
         configString += build_component(component)
 
 configString += f"\tNULL\n{C};\n"
+
+
+#####################
+# Write to config.h #
+#####################
+
 
 with open("config.h", "w") as f:
     f.write(configString)
