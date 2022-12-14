@@ -28,6 +28,6 @@ uninstall:
 	rm -f $(INSTALL_PATH)/plstatus
 
 clean:
-	rm plstatus config.h *.o
+	rm -f plstatus config.h *.o
 
 .PHONY: all install uninstall clean
