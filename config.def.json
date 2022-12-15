@@ -4,21 +4,18 @@
     "sep": " | ",
     "blocks": [
         {
-            "command": "date",
-            "args": ["+%S"],
-            "period": 100
-        },
-        "sep",
-                {
-            "command": "date",
-            "args": ["+%S"],
-            "period": 1000
+            "command": "uname",
+            "args": [
+                "-r",
+                "-s"
+            ],
+            "period": -1
         },
         "sep",
         {
             "command": "date",
-            "args": ["+%S"],
-            "period": 2500
+            "args": "+%Y-%m-%d - %H:%M:%S",
+            "period": 500
         }
     ]
 }
