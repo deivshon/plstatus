@@ -18,8 +18,18 @@ MAX_STATUS_LENGTH = "max-status-length"
 UPDATE_PERIOD = "update-period"
 BLOCKS = "blocks"
 
-CONFIG_NEEDED = (MAX_STATUS_LENGTH, UPDATE_PERIOD, BLOCKS)
-COMPONENT_NEEDED = (COMMAND, PERIOD)
+CONFIG_NEEDED = {
+    MAX_STATUS_LENGTH: int,
+    UPDATE_PERIOD: int,
+    BLOCKS: list
+}
+
+COMPONENT_NEEDED = {
+    COMMAND: str,
+    PERIOD: int
+}
+
+UINT_MAX = "__UINT32_MAX__"
 
 
 def failure(err):
@@ -58,11 +68,14 @@ def load_config(configPath):
 def build_component(component):
     # Check component validity
     for field in COMPONENT_NEEDED:
+        neededType = COMPONENT_NEEDED[field]
         if field not in component:
             failure(f"Needed field \"{field}\" not found in component:\n{json.dumps(component, indent = 2)}")
+        if not isinstance(component[field], neededType):
+            failure(f"Field \"{field}\" in component:\n{json.dumps(component, indent = 2)}\nmust have type \"{neededType.__name__}\"")
 
     command = get_command_path(component[COMMAND])
-    period = component[PERIOD]
+    period = component[PERIOD] if component[PERIOD] > 0 else UINT_MAX
 
     component_string = f"\t{O} \"{command}\", {O} \"{command}\", "
 
@@ -71,6 +84,9 @@ def build_component(component):
             component_string += f"\"{component[ARGUMENTS]}\", "
         else:
             for arg in component[ARGUMENTS]:
+                if not isinstance(arg, str):
+                    failure(f"Argument \"{arg}\" in component\n{json.dumps(component, indent = 2)}\nmust have type {str.__name__}")
+
                 component_string += f"\"{arg}\", "
 
     component_string += f"NULL {C}, {period} {C},\n"
@@ -91,8 +107,12 @@ else:
     failure("No config file found")
 
 for field in CONFIG_NEEDED:
+    neededType = CONFIG_NEEDED[field]
     if field not in config:
-            failure(f"Needed field \"{field}\" not found in config")
+        failure(f"Needed field \"{field}\" not found in config")
+
+    if not isinstance(config[field], neededType):
+        failure(f"Field \"{field}\" in config must have type \"{neededType.__name__}\"")
 
 
 ###########################
@@ -116,7 +136,7 @@ configString += \
 Component components[] = {
 """
 
-for component in config["blocks"]:
+for component in config[BLOCKS]:
     if component == SEPARATOR:
         if SEPARATOR not in config:
             failure("Separator block found but no separator definition given")
