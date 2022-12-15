@@ -13,6 +13,7 @@
 
 #define until_components_end(index) components[index].command != NULL
 #define show_status(display, status) XStoreName(display, DefaultRootWindow(display), status); XFlush(display)
+
 extern Component components[];
 
 Display *display;
@@ -36,7 +37,7 @@ void termination_handler() {
 int main() {
     display = XOpenDisplay(NULL);
     if(display == NULL)
-    failure("Could not open display\n");
+        failure("Could not open display\n");
 
     init();
 
@@ -111,9 +112,8 @@ void component_thread(void *component_ptr) {
 
 void get_component_output(char *dest, Component *component) {
     int piped[2];
-    if(pipe(piped) == -1) {
+    if(pipe(piped) == -1)
         failure("Couldn't create pipe\n");
-    }
 
     if(fork() == 0) {
         close(piped[0]);
