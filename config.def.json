@@ -1,17 +1,17 @@
 {
     "max-status-length": 2048,
-    "update-period": 500,
-    "sep": " | ",
-    "blocks": [
+    "status-period": 500,
+    "separator": " | ",
+    "components": [
         {
             "command": "uname",
             "args": [
-                "-r",
-                "-s"
+                "-s",
+                "-r"
             ],
             "period": -1
         },
-        "sep",
+        "separator",
         {
             "command": "date",
             "args": "+%Y-%m-%d - %H:%M:%S",

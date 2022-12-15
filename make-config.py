@@ -12,16 +12,16 @@ COMMAND = "command"
 ARGUMENTS = "args"
 PERIOD = "period"
 
-SEPARATOR = "sep"
+SEPARATOR = "separator"
 
 MAX_STATUS_LENGTH = "max-status-length"
-UPDATE_PERIOD = "update-period"
-BLOCKS = "blocks"
+STATUS_PERIOD = "status-period"
+COMPONENTS = "components"
 
 CONFIG_NEEDED = {
     MAX_STATUS_LENGTH: int,
-    UPDATE_PERIOD: int,
-    BLOCKS: list
+    STATUS_PERIOD: int,
+    COMPONENTS: list
 }
 
 COMPONENT_NEEDED = {
@@ -127,7 +127,7 @@ configString = \
 """
 
 configString += f"#define MAX_LEN {config[MAX_STATUS_LENGTH]}\n"
-configString += f"#define UPDATE_PERIOD {config[UPDATE_PERIOD]}\n"
+configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n"
 
 configString += \
 """
@@ -136,7 +136,7 @@ configString += \
 Component components[] = {
 """
 
-for component in config[BLOCKS]:
+for component in config[COMPONENTS]:
     if component == SEPARATOR:
         if SEPARATOR not in config:
             failure("Separator block found but no separator definition given")
