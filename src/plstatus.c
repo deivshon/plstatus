@@ -8,8 +8,8 @@
 #include <string.h>
 #include <X11/Xlib.h>
 
-#include "plstatus.h"
-#include "config.h"
+#include "../hs/plstatus.h"
+#include "../hs/config.h"
 
 #define until_components_end(index) components[index].command != NULL
 #define show_status(display, status) XStoreName(display, DefaultRootWindow(display), status); XFlush(display)
@@ -122,7 +122,7 @@ void get_component_output(char *dest, Component *component) {
         close(piped[1]);
 
         execvp(component->command, component->arguments);
-        failure("Exec failed\n");
+        failure("Exec failed \n");
     }
     else {
         dest[0] = '\0';
