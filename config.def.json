@@ -1,0 +1,21 @@
+{
+    "max-status-length": 2048,
+    "status-period": 500,
+    "separator": " | ",
+    "components": [
+        {
+            "command": "uname",
+            "args": [
+                "-s",
+                "-r"
+            ],
+            "period": -1
+        },
+        "separator",
+        {
+            "command": "date",
+            "args": "+%Y-%m-%d - %H:%M:%S",
+            "period": 500
+        }
+    ]
+}

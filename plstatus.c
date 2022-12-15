@@ -12,7 +12,7 @@
 #include "config.h"
 
 #define until_components_end(index) components[index].command != NULL
-
+#define show_status(display, status) XStoreName(display, DefaultRootWindow(display), status); XFlush(display)
 extern Component components[];
 
 Display *display;
@@ -26,8 +26,7 @@ void termination_handler() {
         pthread_join(components[i].thread, NULL);
     }
 
-    XStoreName(display, DefaultRootWindow(display), NULL);
-    XFlush(display);
+    show_status(display, NULL);
     if(XCloseDisplay(display) < 0)
         failure("Could not close display\n");
 
@@ -48,12 +47,10 @@ int main() {
     sigaction(SIGTERM, &action, NULL);
 
     while(True) {
-        get_status();
-
-        XStoreName(display, DefaultRootWindow(display), status);
-        XFlush(display);
-
         usleep(UPDATE_PERIOD * 1000);
+
+        get_status();
+        show_status(display, status);
     }
 }
 
