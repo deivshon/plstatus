@@ -8,7 +8,7 @@ INSTALL_PATH = /usr/local/bin
 all: config.h plstatus
 
 plstatus: plstatus.o
-	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $<
+	$(CC) -o $@ $(LDFLAGS) $<
 
 plstatus.o: plstatus.c plstatus.h config.h
 	$(CC) -c -o $@ $(CFLAGS) $<
