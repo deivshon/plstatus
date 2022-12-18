@@ -89,7 +89,7 @@ def build_component(component):
 
                 component_string += f"\"{arg}\", "
 
-    component_string += f"NULL {C}, {period} {C},\n"
+    component_string += f"NULL {C}, {period}, {O} 0 {C} , 0 {C},\n"
 
     return component_string
 
@@ -145,7 +145,7 @@ for component in config[COMPONENTS]:
     else:
         configString += build_component(component)
 
-configString += f"\tNULL\n{C};\n"
+configString += "\t{ NULL }\n};\n"
 
 
 #####################
