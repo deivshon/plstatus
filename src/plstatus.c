@@ -12,7 +12,15 @@
 #include "../hs/config.h"
 
 #define until_components_end(index) components[index].command != NULL
+
+// Print the string stored in status on the display status bar
 #define show_status(display, status) XStoreName(display, DefaultRootWindow(display), status); XFlush(display)
+
+// Sleep the sleep_time_ms value and then update the status bar with the current components' results
+#define sleep_update(sleep_time_ms)     \
+        usleep(sleep_time_ms * 1000);   \
+        get_status();                   \
+        show_status(display, status)
 
 extern Component components[];
 
@@ -47,11 +55,11 @@ int main() {
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 
-    while(True) {
-        usleep(UPDATE_PERIOD * 1000);
+    // Avoid waiting the whole update period before printing the first status
+    sleep_update(10);
 
-        get_status();
-        show_status(display, status);
+    while(True) {
+        sleep_update(UPDATE_PERIOD);
     }
 }
 
