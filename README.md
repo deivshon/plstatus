@@ -1,6 +1,6 @@
 # **plstatus**
 
-plstatus (parallel status) is a minimal (127 SLOC) status bar for DWM that lets you run blocks asynchronously. JSON configurable, with `config.h` created at compile time
+plstatus (parallel status) is a minimal (130 SLOC) status bar for DWM that lets you run blocks asynchronously. JSON configurable, with `config.h` created at compile time
 
 ## No shells involved
 
