@@ -131,7 +131,7 @@ configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n"
 
 configString += \
 """
-#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__ }
+#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__, { 0 }, 0 }
 
 Component components[] = {
 """
