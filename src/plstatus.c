@@ -16,12 +16,6 @@
 // Print the string stored in status on the display status bar
 #define show_status(display, status) XStoreName(display, DefaultRootWindow(display), status); XFlush(display)
 
-// Sleep the sleep_time_ms value and then update the status bar with the current components' results
-#define sleep_update(sleep_time_ms)     \
-        usleep(sleep_time_ms * 1000);   \
-        get_status();                   \
-        show_status(display, status)
-
 extern Component components[];
 
 Display *display;
@@ -31,6 +25,8 @@ sem_t status_mutex;
 
 void termination_handler() {
     for(int i = 0; until_components_end(i); i++) {
+        if(components[i].thread_joined) continue;
+
         pthread_kill(components[i].thread, SIGUSR1);
         pthread_join(components[i].thread, NULL);
     }
@@ -55,11 +51,11 @@ int main() {
     sigaction(SIGINT, &action, NULL);
     sigaction(SIGTERM, &action, NULL);
 
-    // Avoid waiting the whole update period before printing the first status
-    sleep_update(10);
-
     while(True) {
-        sleep_update(UPDATE_PERIOD);
+        get_status();
+        show_status(display, status);
+
+        usleep(UPDATE_PERIOD * 1000);
     }
 }
 
@@ -73,8 +69,15 @@ void init() {
 
     for(int i = 0; until_components_end(i); i++) {
         components[i].current_result[0] = '\0';
+
+        sem_init(&components[i].ran_once, 0, 0);
         pthread_create(&(components[i].thread), NULL, (void *) component_thread, &components[i]);
+
+        sem_wait(&components[i].ran_once);
+        if(components[i].period == __UINT32_MAX__)
+            pthread_join(components[i].thread, NULL);
     }
+
 }
 
 void get_status() {
@@ -92,29 +95,41 @@ void component_stop() {
     pthread_exit(EXIT_SUCCESS);
 }
 
+void run_component(Component *component) {
+    char buf[MAX_RESULT_LEN];
+    get_component_output(buf, component);
+    wait(NULL);
+
+    // Remove newline
+    buf[strcspn(buf, "\n")] = 0;
+
+    sem_wait(&status_mutex);
+    strncpy(component->current_result, buf, MAX_RESULT_LEN);
+    sem_post(&status_mutex);
+}
+
 void component_thread(void *component_ptr) {
     Component *component = (Component *) component_ptr;
-    unsigned int period = component->period < __UINT32_MAX__ / 1000 ? \
-                          component->period * 1000 : __UINT32_MAX__;
+    component->period = component->period < __UINT32_MAX__ / 1000 ? \
+                        component->period * 1000 : __UINT32_MAX__;
 
     struct sigaction action = {0};
     action.sa_handler = component_stop;
 
     sigaction(SIGUSR1, &action, NULL);
 
+    run_component(component);
+    sem_post(&component->ran_once);
+
+    if(component->period == __UINT32_MAX__) {
+        component->thread_joined = True;
+        component_stop();
+    }
+
     while(True) {
-        char buf[MAX_RESULT_LEN];
-        get_component_output(buf, component);
-        wait(NULL);
+        run_component(component);
 
-        // Remove newline
-        buf[strcspn(buf, "\n")] = 0;
-
-        sem_wait(&status_mutex);
-        strncpy(component->current_result, buf, MAX_RESULT_LEN);
-        sem_post(&status_mutex);
-
-        usleep(period);
+        usleep(component->period);
     }
 }
 

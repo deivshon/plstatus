@@ -91,7 +91,7 @@ def build_component(component):
                 arg = os.path.expanduser(arg)
                 component_string += f"\"{arg}\", "
 
-    component_string += f"NULL {C}, {period}, {O} 0 {C} , 0 {C},\n"
+    component_string += f"NULL {C}, {period}, " +  "{ 0 }, 0, 0, { { 0 } } },\n"
 
     return component_string
 
@@ -133,7 +133,7 @@ configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n"
 
 configString += \
 """
-#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__, { 0 }, 0 }
+#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__, { 0 }, 0 , 0, { { 0 } } }
 
 Component components[] = {
 """
