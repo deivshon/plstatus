@@ -81,12 +81,14 @@ def build_component(component):
 
     if ARGUMENTS in component:
         if isinstance(component[ARGUMENTS], str):
-            component_string += f"\"{component[ARGUMENTS]}\", "
+            arg = os.path.expanduser(component[ARGUMENTS])
+            component_string += f"\"{arg}\", "
         else:
             for arg in component[ARGUMENTS]:
                 if not isinstance(arg, str):
                     failure(f"Argument \"{arg}\" in component\n{json.dumps(component, indent = 2)}\nmust have type {str.__name__}")
 
+                arg = os.path.expanduser(arg)
                 component_string += f"\"{arg}\", "
 
     component_string += f"NULL {C}, {period}, {O} 0 {C} , 0 {C},\n"
