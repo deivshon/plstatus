@@ -155,5 +155,5 @@ configString += "\t{ NULL }\n};\n"
 #####################
 
 
-with open("hs/config.h", "w") as f:
+with open("src/config.h", "w") as f:
     f.write(configString)

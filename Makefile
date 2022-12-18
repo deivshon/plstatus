@@ -4,8 +4,8 @@ CFLAGS = -O2 -Wall -Wextra
 LDFLAGS = -lX11 -lpthread
 
 SRC = src
-HS = hs
-CFG = cfg
+HS = src
+CFG = .
 
 INSTALL_PATH = /usr/local/bin
 

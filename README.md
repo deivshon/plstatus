@@ -2,7 +2,7 @@
 
 plstatus (parallel status) is a minimal and compact (144 significant LOC) status bar for [dwm](https://dwm.suckless.org/) that lets you run blocks asynchronously. JSON configurable, with `config.h` created at compile time
 
-## No shells involved
+## Shell-less commands invocation 
 
 All dwm status bar programs I encountered use methods of running commands that carry shells with them (such as using `popen`, as in the case of the [*run_command*](https://git.suckless.org/slstatus/file/components/run_command.c.html) module in the original [slstatus](https://tools.suckless.org/slstatus/))
 

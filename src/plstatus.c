@@ -8,8 +8,8 @@
 #include <string.h>
 #include <X11/Xlib.h>
 
-#include "../hs/plstatus.h"
-#include "../hs/config.h"
+#include "plstatus.h"
+#include "config.h"
 
 #define until_components_end(index) components[index].command != NULL
 
