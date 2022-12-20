@@ -9,7 +9,7 @@ All dwm status bar programs I encountered use methods of running commands that c
 plstatus runs user defined commands asynchronously without invoking a shell
 
 ## Configuration
-The configuration is done using a JSON file, `config.json`, which is read at compile time by a Python script that creates an equivalent `config.h` file
+Configuration is done through a JSON file, `config.json`, which is read at compile time by a Python script that creates an equivalent `config.h` file
 
 `config.json` is created after running `make` for the first time. Alternatively, you can create it manually
 
@@ -22,7 +22,7 @@ The accepted `config.json` fields are the following:
     + `period` - the period of the component update in milliseconds (independent of the status bar period). If this value is set to zero or less, the component will not be updated
     + `args` (optional) - the arguments to pass the `command`<sup>1</sup>. If only one argument is needed, it can be a string, otherwise, a list of strings is needed
 
-An example configuration file is worth a thousand words: refer to `config.def.json` if something is not clear
+**An example configuration file is worth a thousand words**: refer to `config.def.json` if something is not clear
 
 <sup>1</sup> When ran through the `config.h` creation script, tilde expansion is performed on commands and arguments, so "~" can be used to describe paths
 
@@ -30,7 +30,7 @@ An example configuration file is worth a thousand words: refer to `config.def.js
 
 Clone the repository, edit the configuration file and run
 ```
-make clean all && sudo make install
+$ make clean all && sudo make install
 ```
 
 The install path is `/usr/local/bin`. If needed, it can be changed in the Makefile
