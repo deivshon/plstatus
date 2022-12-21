@@ -1,6 +1,15 @@
-import json
-import sys
 import os
+import sys
+import json
+
+bold = lambda t: f"\033[1m{t}\033[0;0m"
+
+def failure(err):
+    print(f"Error: {err}", file = sys.stderr)
+    sys.exit(1)
+
+if os.path.expanduser("~") == "/root":
+    failure(f"Don't run the make-config script as root\nIf you're trying to install, run {bold('make clean all && sudo make install')}")
 
 
 O = "{"
@@ -31,10 +40,6 @@ COMPONENT_NEEDED = {
 
 UINT_MAX = "__UINT32_MAX__"
 
-
-def failure(err):
-    print(f"Error: {err}", file = sys.stderr)
-    sys.exit(1)
 
 def get_command_path(command):
     command = os.path.expanduser(command)
