@@ -9,7 +9,7 @@ def failure(err):
     sys.exit(1)
 
 if os.path.expanduser("~") == "/root":
-    failure(f"Don't run the make-config script as root\nIf you're trying to install, run {bold('make clean all && sudo make install')}")
+    failure(f"Don't run the make-config script as root\nIf you're trying to install, run {bold('make all && sudo make install')}")
 
 
 O = "{"
