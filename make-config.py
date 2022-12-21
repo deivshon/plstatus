@@ -134,14 +134,11 @@ configString = \
 """
 
 configString += f"#define MAX_LEN {config[MAX_STATUS_LENGTH]}\n"
-configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n"
+configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n\n"
 
-configString += \
-"""
-#define separator(str) { "printf", { "printf", str, NULL}, __UINT32_MAX__, { 0 }, 0 , 0, { { 0 } } }
+configString += "#define separator(str) { \"printf\", { \"printf\", str, NULL}," + UINT_MAX + ", { 0 }, 0 , 0, { { 0 } } }\n\n"
 
-Component components[] = {
-"""
+configString += "Component components[] = {\n"
 
 for component in config[COMPONENTS]:
     if component == SEPARATOR:
