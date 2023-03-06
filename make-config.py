@@ -96,7 +96,16 @@ def build_component(component):
                 arg = os.path.expanduser(arg)
                 component_string += f"\"{arg}\", "
 
-    component_string += f"NULL {C}, {period}, " +  "{ 0 }, 0, 0, { { 0 } } },\n"
+    component_string += f"NULL {C}, {period}, " +  "{ 0 }, 0, 0, { { 0 } }, "
+
+    if SEPARATOR in component:
+        if not isinstance (component[SEPARATOR], str):
+            failure(f"Separator \"{component[SEPARATOR]}\" in component \n{json.dumps(component, indent = 2)}\nmust have type {str.__name__}")
+        
+        component_string += f"\"{component[SEPARATOR]}\" "
+    else: component_string += "\"\" "
+
+    component_string += "},\n"
 
     return component_string
 
@@ -136,18 +145,10 @@ configString = \
 configString += f"#define MAX_LEN {config[MAX_STATUS_LENGTH]}\n"
 configString += f"#define UPDATE_PERIOD {config[STATUS_PERIOD]}\n\n"
 
-configString += "#define separator(str) { \"printf\", { \"printf\", str, NULL}," + UINT_MAX + ", { 0 }, 0 , 0, { { 0 } } }\n\n"
-
 configString += "Component components[] = {\n"
 
 for component in config[COMPONENTS]:
-    if component == SEPARATOR:
-        if SEPARATOR not in config:
-            failure("Separator block found but no separator definition given")
-        else:
-            configString += build_separator(config[SEPARATOR])
-    else:
-        configString += build_component(component)
+    configString += build_component(component)
 
 configString += "\t{ NULL }\n};\n"
 

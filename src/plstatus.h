@@ -22,6 +22,8 @@ typedef struct component {
     int thread_joined;
 
     sem_t ran_once;
+    
+    char *sep;
 } Component;
 
 void get_status();

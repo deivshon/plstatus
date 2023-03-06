@@ -85,7 +85,10 @@ void get_status() {
 
     status[0] = '\0';
     for(int i = 0; until_components_end(i); i++) {
-        strncat(status, components[i].current_result, MAX_LEN - strlen(status));
+        if(strncmp(components[i].current_result, "", strlen(components[i].current_result))) {
+            strncat(status, components[i].current_result, MAX_LEN - strlen(status));
+            strncat(status, components[i].sep, MAX_LEN - strlen(status));
+        }
     }
 
     sem_post(&status_mutex);
