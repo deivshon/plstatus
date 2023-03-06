@@ -20,7 +20,7 @@ The accepted `config.json` fields are the following:
     + `command` - the name or path of the program to invoke<sup>1</sup>
     + `period` - the period of the component update in milliseconds (independent of the status bar period). If this value is set to zero or less, the component will not be updated
     + `args` (optional) - the arguments to pass the `command`<sup>1</sup>. If only one argument is needed, it can be a string, otherwise, a list of strings is needed
-    + `separator` (optional) - a string to append to the command output. If the program does not produce output, the separator is not appended
+    + `separator` (optional) - a string to append to the command output. If the command does not produce output, the separator is not appended
 
 **An example configuration file is worth a thousand words**: refer to `config.def.json` if something is not clear
 
