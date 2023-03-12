@@ -25,7 +25,7 @@ config.json: config.def.json
 
 install: plstatus
 	mkdir -p $(INSTALL_PATH)
-	cp plstatus $(INSTALL_PATH)
+	cp -f plstatus $(INSTALL_PATH)
 	chmod 755 $(INSTALL_PATH)/plstatus
 
 uninstall:
