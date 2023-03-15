@@ -144,7 +144,6 @@ void get_component_output(char *dest, Component *component) {
     if(fork() == 0) {
         close(piped[0]);
         dup2(piped[1], 1);
-        dup2(piped[1], 2);
         close(piped[1]);
 
         execvp(component->command, component->arguments);
