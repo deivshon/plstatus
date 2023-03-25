@@ -5,8 +5,11 @@ import json
 bold = lambda t: f"\033[1m{t}\033[0;0m"
 
 def failure(err):
-    print(f"Error: {err}", file = sys.stderr)
+    print(f"Error: {bold(err)}", file = sys.stderr)
     sys.exit(1)
+
+def warning(warn):
+    print(f"Warning: {bold(warn)}", file = sys.stderr)
 
 if os.path.expanduser("~") == "/root":
     failure(f"Don't run the make-config script as root\nIf you're trying to install, run {bold('make all && sudo make install')}")
@@ -48,8 +51,6 @@ def get_command_path(command):
     if command == os.path.abspath(command):
         if os.path.isfile(command):
             return command
-        else:
-            failure(f"Command \"{command}\" does not exist")
 
     # Command was given in the form of the name of the destination file,
     # so it needs to be searched within PATH
@@ -59,7 +60,7 @@ def get_command_path(command):
         if os.path.isfile(path + f"/{command}"):
             return os.path.join(path, command)
 
-    failure(f"Command \"{command}\" does not exist within any of the folders in PATH")
+    warning(f"Command \"{command}\" does not exist as a file or within any of the folders in PATH")
 
 def load_config(configPath):
     with open(configPath, "r") as f:
