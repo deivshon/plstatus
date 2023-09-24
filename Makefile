@@ -1,5 +1,5 @@
 INSTALL_PATH ?= /usr/local/bin
-PLSTATUS_BINARY = target/release/plstatus
+PLSTATUS_BINARY = ./target/release/plstatus
 
 all:
 	cargo build --release
