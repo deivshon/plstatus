@@ -16,6 +16,7 @@ struct ConfigComponent {
     pub arguments: Option<Vec<String>>,
     pub period: Option<u64>,
     pub separator: Option<String>,
+    pub label: Option<String>,
 }
 
 #[derive(serde::Deserialize)]
@@ -63,6 +64,10 @@ impl Config {
                     match &c.separator {
                         Some(s) => s.clone(),
                         None => String::from(DEFAULT_SEPARATOR),
+                    },
+                    match &c.label {
+                        Some(l) => l.clone(),
+                        None => String::new(),
                     },
                 )))
             })

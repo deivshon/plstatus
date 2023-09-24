@@ -26,7 +26,8 @@ fn status_loop(status: Arc<Mutex<String>>, config: Config) {
         for (idx, c) in (&config.components).iter().enumerate() {
             let component = c.lock().unwrap();
             *status = format!(
-                "{}{}{}",
+                "{}{}{}{}",
+                component.label,
                 *status,
                 component.current_result,
                 if idx != config.components.len() - 1 {

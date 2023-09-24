@@ -11,16 +11,24 @@ pub struct Component {
     pub period: Option<u64>,
     pub current_result: String,
     pub separator: String,
+    pub label: String,
 }
 
 impl Component {
-    pub fn new(binary: String, args: Vec<String>, period: Option<u64>, separator: String) -> Self {
+    pub fn new(
+        binary: String,
+        args: Vec<String>,
+        period: Option<u64>,
+        separator: String,
+        label: String,
+    ) -> Self {
         return Component {
             binary,
             args,
             period,
             current_result: String::new(),
             separator,
+            label,
         };
     }
 
