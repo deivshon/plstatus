@@ -10,15 +10,17 @@ pub struct Component {
     pub args: Vec<String>,
     pub period: Option<u64>,
     pub current_result: String,
+    pub separator: String,
 }
 
 impl Component {
-    pub fn new(binary: String, args: Vec<String>, period: Option<u64>) -> Self {
+    pub fn new(binary: String, args: Vec<String>, period: Option<u64>, separator: String) -> Self {
         return Component {
             binary,
             args,
             period,
             current_result: String::new(),
+            separator,
         };
     }
 
@@ -52,7 +54,7 @@ impl Component {
 
         let output = match command.output() {
             Ok(o) => String::from_utf8_lossy(&o.stdout).trim().to_string(),
-            Err(_) => String::from("Could not obtain output"),
+            Err(_) => String::from("Error"),
         };
 
         {

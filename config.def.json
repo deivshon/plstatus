@@ -1,20 +1,22 @@
 {
-    "max-status-length": 2048,
-    "status-period": 500,
     "components": [
         {
-            "command": "uname",
-            "args": [
-                "-s",
-                "-r"
-            ],
-            "period": -1,
-            "separator": "|"
+            "binary": "whoami",
+            "separator": "/"
         },
         {
-            "command": "date",
-            "args": "+%Y-%m-%d - %H:%M:%S",
-            "period": 500
+            "binary": "uname",
+            "arguments": [
+                "-s",
+                "-r"
+            ]
+        },
+        {
+            "binary": "date",
+            "arguments": ["+%Y-%m-%d - %H:%M:%S"],
+            "period": 900
         }
-    ]
+    ],
+    "period": 1000,
+    "first_wait": 5
 }
