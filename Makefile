@@ -1,11 +1,12 @@
-INSTALL_PATH = /usr/local/bin
+INSTALL_PATH ?= /usr/local/bin
+PLSTATUS_BINARY = target/release/plstatus
 
 all:
 	cargo build --release
 
-install: all
+install: $(PLSTATUS_BINARY)
 	mkdir -p $(INSTALL_PATH)
-	cp -f ./target/release/plstatus $(INSTALL_PATH)
+	cp -f $(PLSTATUS_BINARY) $(INSTALL_PATH)
 	chmod 755 $(INSTALL_PATH)/plstatus
 
 uninstall:
