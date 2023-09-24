@@ -30,7 +30,7 @@ fn status_loop(status: Arc<Mutex<String>>, config: Config) {
                 component.label,
                 *status,
                 component.current_result,
-                if idx != config.components.len() - 1 {
+                if idx != config.components.len() - 1 && !component.current_result.is_empty() {
                     component.separator.as_str()
                 } else {
                     ""
