@@ -17,12 +17,13 @@ $^1$ The status bar period refers to the duration waited between each status bar
 
 Component configuration
 ----------
-| Key           | Description                                    |Optional|Default         |
-|---------------|------------------------------------------------|--------|----------------|
-| `binary`      | The binary to execute.                         | No     | N/A            |
-| `arguments`   | Array of arguments to pass to the binary       | Yes    | []             |
-| `period`      | The update period in milliseconds              | Yes    | $\infty$       |
-| `separator`   | A separator to use between component outputs   | Yes    | \|             |
+| Key           | Description                                           |Optional|Default         |
+|---------------|-------------------------------------------------------|--------|----------------|
+| `binary`      | The binary to execute.                                | No     | N/A            |
+| `arguments`   | Array of arguments to pass to the binary              | Yes    | []             |
+| `period`      | The update period in milliseconds                     | Yes    | $\infty$       |
+| `separator`   | A separator to use between component outputs          | Yes    | \|             |
+| `label`       | A string to be printed before the component output    | Yes    |                |
 
 Refer to `config.def.json` for an example configuration
 
