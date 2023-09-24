@@ -5,7 +5,7 @@ plstatus (parallel status) is a minimal, JSON configurable status bar for [dwm](
 ## Configuration
 The program is configured through a JSON file, which by default is searched at `$HOME/.config/plstatus/config.json`
 
-The JSON file structure includes
+The JSON configuration file structure includes
 
 | Key           | Description                                       |Optional|Default|
 |---------------|---------------------------------------------------|--------|-------|
@@ -34,4 +34,4 @@ Clone the repository, edit the configuration file and run
 $ make all && sudo make install
 ```
 
-The default install path is `/usr/local/bin` and can be changed via `INSTALL_PATH` environment variable
+The default install path is `/usr/local/bin` and can be changed via the `INSTALL_PATH` environment variable
