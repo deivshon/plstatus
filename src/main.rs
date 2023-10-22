@@ -41,12 +41,35 @@ fn status_loop(status: Arc<Mutex<String>>, config: Config) {
             (*status).clear();
             for (idx, c) in (&config.components).iter().enumerate() {
                 let component = c.lock().unwrap();
+
+                match &component.status {
+                    Ok(s_opt) => match s_opt {
+                        Some(s) => {
+                            if *s != 0 {
+                                eprintln!(
+                                    "Component `{}` exited with status code: {}\tstderr: {}",
+                                    component.binary, s, component.stderr
+                                );
+                            }
+                        }
+                        None => {
+                            eprintln!(
+                                "Component `{}` errored on status retrieval\tstderr: {}",
+                                component.binary, component.stderr
+                            )
+                        }
+                    },
+                    Err(e) => {
+                        eprintln!("Component `{}` could not be run: {}", component.binary, e)
+                    }
+                }
+
                 *status = format!(
                     "{}{}{}{}",
                     component.label,
                     *status,
-                    component.current_result,
-                    if idx != config.components.len() - 1 && !component.current_result.is_empty() {
+                    component.stdout,
+                    if idx != config.components.len() - 1 && !component.stdout.is_empty() {
                         component.separator.as_str()
                     } else {
                         ""
