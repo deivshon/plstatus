@@ -10,12 +10,12 @@ use std::{
     time::Duration,
 };
 
-use argparse::{ArgumentParser, StoreOption};
+use argparse::{ArgumentParser, StoreOption, StoreTrue};
 use component::Component;
 use config::{Config, DEFAULT_CONFIG_PATH};
 use utils::{failure, warn};
 
-fn print_status(status: &str) {
+fn print_bar(status: &str) {
     let print_status = Command::new("xsetroot").arg("-name").arg(status).status();
 
     if let Err(e) = print_status {
@@ -23,13 +23,15 @@ fn print_status(status: &str) {
     }
 }
 
-fn termination_handler(status: &Arc<Mutex<String>>) {
+fn termination_handler(status: &Arc<Mutex<String>>, stdout_print: bool) {
     let _status = status.lock().unwrap();
-    print_status("");
+    if !stdout_print {
+        print_bar("");
+    }
     process::exit(1);
 }
 
-fn status_loop(status: Arc<Mutex<String>>, config: Config) {
+fn status_loop(status: Arc<Mutex<String>>, config: Config, stdout_print: bool) {
     if let Some(wait) = config.first_wait {
         thread::sleep(Duration::from_millis(wait));
     }
@@ -77,7 +79,11 @@ fn status_loop(status: Arc<Mutex<String>>, config: Config) {
                 );
             }
 
-            print_status((*status).as_str());
+            if stdout_print {
+                println!("{}", status);
+            } else {
+                print_bar((*status).as_str());
+            }
         }
 
         thread::sleep(Duration::from_millis(config.period));
@@ -86,6 +92,7 @@ fn status_loop(status: Arc<Mutex<String>>, config: Config) {
 
 fn main() {
     let mut config_path: Option<String> = None;
+    let mut stdout_print: bool = false;
     let config_option_help = format!(
         "Path to the configuration file (default: $HOME/{})",
         DEFAULT_CONFIG_PATH
@@ -98,6 +105,12 @@ fn main() {
             &["-c", "--config"],
             StoreOption,
             &config_option_help,
+        );
+
+        ap.refer(&mut stdout_print).add_option(
+            &["-s", "--stdout"],
+            StoreTrue,
+            "Print output on stdout",
         );
 
         ap.parse_args_or_exit();
@@ -120,9 +133,9 @@ fn main() {
     }
 
     let status_ref = Arc::clone(&status);
-    ctrlc::set_handler(move || termination_handler(&status_ref))
+    ctrlc::set_handler(move || termination_handler(&status_ref, stdout_print))
         .expect("Could not set termination handler");
-    let status_loop_handle = thread::spawn(move || status_loop(status, config));
+    let status_loop_handle = thread::spawn(move || status_loop(status, config, stdout_print));
 
     status_loop_handle.join().unwrap();
 }
