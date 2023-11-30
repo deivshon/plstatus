@@ -1,8 +1,9 @@
 INSTALL_PATH ?= /usr/local/bin
-PLSTATUS_BINARY = ./target/release/plstatus
+PLSTATUS_BINARY = ./out/plstatus
 
 all:
-	cargo build --release
+	mkdir -p ./out
+	go build -o ./out/plstatus ./src/cmd/main.go
 
 install: $(PLSTATUS_BINARY)
 	mkdir -p $(INSTALL_PATH)
@@ -13,6 +14,6 @@ uninstall:
 	rm -f $(INSTALL_PATH)/plstatus
 
 clean:
-	cargo clean
+	rm -rf ./out
 
 .PHONY: all install uninstall clean

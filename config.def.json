@@ -6,10 +6,7 @@
         },
         {
             "binary": "uname",
-            "arguments": [
-                "-s",
-                "-r"
-            ]
+            "arguments": ["-s", "-r"]
         },
         {
             "binary": "date",
