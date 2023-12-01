@@ -3,7 +3,7 @@ PLSTATUS_BINARY = ./out/plstatus
 
 all:
 	mkdir -p ./out
-	make lint && go build -o ./out/plstatus ./src/cmd/main.go
+	go mod tidy && make lint && go build -o ./out/plstatus ./src/cmd/main.go
 
 install: $(PLSTATUS_BINARY)
 	mkdir -p $(INSTALL_PATH)
