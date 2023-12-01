@@ -3,7 +3,7 @@ PLSTATUS_BINARY = ./out/plstatus
 
 all:
 	mkdir -p ./out
-	go build -o ./out/plstatus ./src/cmd/main.go
+	make lint && go build -o ./out/plstatus ./src/cmd/main.go
 
 install: $(PLSTATUS_BINARY)
 	mkdir -p $(INSTALL_PATH)
@@ -15,5 +15,8 @@ uninstall:
 
 clean:
 	rm -rf ./out
+
+lint:
+	golangci-lint run
 
 .PHONY: all install uninstall clean

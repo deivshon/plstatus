@@ -9,6 +9,7 @@ import (
 const defaultFirstWait int32 = 10
 const defaultComponentPeriod int32 = 1000
 const defaultComponentSeparator string = "|"
+const defaultLastStatus string = "N/A"
 
 type InvalidConfigError struct {
 	Message string
@@ -62,6 +63,8 @@ func Parse(filepath string) (Config, error) {
 			separator := defaultComponentSeparator
 			config.Components[i].Separator = &separator
 		}
+
+		component.LastStatus = defaultLastStatus
 	}
 
 	return config, nil

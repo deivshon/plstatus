@@ -1,15 +1,9 @@
 package config
 
-type Config struct {
-	Period     *int32         `json:"period"`
-	Components []RawComponent `json:"components"`
-	FirstWait  *int32         `json:"first_wait"`
-}
+import "main/src/pkg/component"
 
-type RawComponent struct {
-	Binary    *string  `json:"binary"`
-	Arguments []string `json:"arguments"`
-	Period    *int32   `json:"period"`
-	Separator *string  `json:"separator"`
-	Label     string   `json:"label"`
+type Config struct {
+	Period     *int32                `json:"period"`
+	Components []component.Component `json:"components"`
+	FirstWait  *int32                `json:"first_wait"`
 }
