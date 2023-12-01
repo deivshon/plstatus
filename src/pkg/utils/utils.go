@@ -6,14 +6,15 @@ import (
 )
 
 var debugMode = false
-var debugLogger = log.New(os.Stdout, "", log.LstdFlags)
+var debugLogger = log.New(os.Stdout, "", log.Ldate|log.Lmicroseconds)
+var stderrLogger = log.New(os.Stderr, "", log.Ldate|log.Lmicroseconds)
 
 func Failure(message string) {
-	log.Fatalf("fatal failure: %v\n", message)
+	stderrLogger.Fatalf("failure: %v\n", message)
 }
 
 func Warning(message string) {
-	log.Printf("warning: %v\n", message)
+	stderrLogger.Printf("warning: %v\n", message)
 }
 
 func Debug(message string) {

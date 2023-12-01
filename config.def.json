@@ -2,7 +2,8 @@
     "components": [
         {
             "binary": "whoami",
-            "separator": "/"
+            "separator": "/",
+            "label": "user "
         },
         {
             "binary": "uname",
@@ -15,5 +16,5 @@
         }
     ],
     "period": 1000,
-    "first_wait": 5
+    "firstWait": 5
 }

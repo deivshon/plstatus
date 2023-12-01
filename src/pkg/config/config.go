@@ -7,7 +7,6 @@ import (
 )
 
 const defaultFirstWait int32 = 10
-const defaultComponentPeriod int32 = 1000
 const defaultComponentSeparator string = "|"
 const defaultLastStatus string = "N/A"
 
@@ -37,10 +36,6 @@ func Parse(filepath string) (Config, error) {
 		return Config{}, err
 	}
 
-	if config.Period == nil {
-		return Config{}, newInvalidConfigError("a status bar period must be specified")
-	}
-
 	if config.FirstWait == nil {
 		firstWait := defaultFirstWait
 		config.FirstWait = &firstWait
@@ -54,10 +49,6 @@ func Parse(filepath string) (Config, error) {
 		}
 		if component.Arguments == nil {
 			config.Components[i].Arguments = make([]string, 0)
-		}
-		if component.Period == nil {
-			period := defaultComponentPeriod
-			config.Components[i].Period = &period
 		}
 		if component.Separator == nil {
 			separator := defaultComponentSeparator

@@ -8,11 +8,10 @@ import (
 )
 
 func (c Component) Run(id int, out chan<- ComponentOutput) {
-	periodDuration := time.Duration(*c.Period) * time.Millisecond
 	firstRun := true
 	for {
 		if !firstRun {
-			time.Sleep(periodDuration)
+			time.Sleep(time.Duration(*c.Period) * time.Millisecond)
 		}
 		firstRun = false
 
@@ -21,10 +20,10 @@ func (c Component) Run(id int, out chan<- ComponentOutput) {
 		stdout, err := command.Output()
 		exitCode := command.ProcessState.ExitCode()
 		if err != nil {
-			utils.Warning(fmt.Sprintf("component `%v` has errored out: %v", *c.Binary, err))
+			utils.Warning(fmt.Sprintf("component no. %v (%v) has errored out: %v", id, *c.Binary, err))
 			output = ""
 		} else if exitCode != 0 {
-			utils.Warning(fmt.Sprintf("component `%v` exited with code: %v", *c.Binary, exitCode))
+			utils.Warning(fmt.Sprintf("component no. %v (%v) exited with code: %v", id, *c.Binary, exitCode))
 			output = ""
 		} else {
 			output = fmt.Sprintf("%v%v", c.Label, string(stdout))
@@ -33,6 +32,10 @@ func (c Component) Run(id int, out chan<- ComponentOutput) {
 		out <- ComponentOutput{
 			Output: output,
 			Id:     id,
+		}
+
+		if c.Period == nil {
+			break
 		}
 	}
 }
