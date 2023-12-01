@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"main/src/pkg/component"
 	"main/src/pkg/config"
@@ -47,10 +48,28 @@ func computeStatus(components []component.Component) string {
 }
 
 func main() {
+	var debug = flag.Bool("d", false, "Debug output")
+	var stdout = flag.Bool("s", false, "Print status on stdout")
+	var configPath = flag.String("c", "", "Path to the configuration file to be used")
+	flag.Parse()
+
 	signalsChan := make(chan os.Signal, 1)
 	signal.Notify(signalsChan, syscall.SIGINT, syscall.SIGTERM)
 
-	config, err := config.Parse("./config.def.json")
+	if *debug {
+		utils.SetDebugMode()
+	}
+
+	if *configPath == "" {
+		home := os.Getenv("HOME")
+		if home == "" {
+			utils.Failure("$HOME not set : could not establish default configuration file path and none was passed")
+		}
+
+		*configPath = fmt.Sprintf("%v/.config/plstatus/config.json", home)
+	}
+
+	config, err := config.Parse(*configPath)
 	if err != nil {
 		utils.Failure(fmt.Sprintf("%v", err))
 	}
@@ -69,8 +88,6 @@ func main() {
 	}
 
 	firstWaitChannel := time.After(time.Duration(*config.FirstWait) * time.Millisecond)
-
-	utils.SetDebugMode()
 	for {
 		select {
 		case output := <-outputChan:
@@ -86,7 +103,7 @@ func main() {
 				break
 			}
 
-			printStatusBar(computeStatus(config.Components), false)
+			printStatusBar(computeStatus(config.Components), *stdout)
 		case s := <-signalsChan:
 			utils.Debug(fmt.Sprintf("received signal: %v", s))
 			err = xorg.XSetRoot(xorg.DefaultRoot)
@@ -96,10 +113,10 @@ func main() {
 			os.Exit(0)
 		case <-tickerChannel:
 			utils.Debug("status period ticker")
-			printStatusBar(computeStatus(config.Components), false)
+			printStatusBar(computeStatus(config.Components), *stdout)
 		case <-firstWaitChannel:
 			utils.Debug("first wait triggered")
-			printStatusBar(computeStatus(config.Components), false)
+			printStatusBar(computeStatus(config.Components), *stdout)
 		}
 	}
 }

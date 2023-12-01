@@ -38,6 +38,7 @@ Refer to `config.def.json` for an example configuration
 | ----- | ---------- | ------------------------------------- | -------- | ------------------------------------ |
 | `-c`  | `--config` | Path to the configuration file        | Yes      | `$HOME/.config/plstatus/config.json` |
 | `-s`  | `--stdout` | Flag to print status output on stdout | Yes      | `false`                              |
+| `-d`  | `--debug`  | Flag to print debug output            | Yes      | `false`                              |
 
 ## Installation
 

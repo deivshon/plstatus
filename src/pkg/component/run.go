@@ -9,6 +9,7 @@ import (
 
 func (c Component) Run(id int, out chan<- ComponentOutput) {
 	firstRun := true
+	componentIdentifier := fmt.Sprintf("no. %v (%v)", id, *c.Binary)
 	for {
 		if !firstRun {
 			time.Sleep(time.Duration(*c.Period) * time.Millisecond)
@@ -20,10 +21,10 @@ func (c Component) Run(id int, out chan<- ComponentOutput) {
 		stdout, err := command.Output()
 		exitCode := command.ProcessState.ExitCode()
 		if err != nil {
-			utils.Warning(fmt.Sprintf("component no. %v (%v) has errored out: %v", id, *c.Binary, err))
+			utils.Warning(fmt.Sprintf("component %v has errored out: %v", componentIdentifier, err))
 			output = ""
 		} else if exitCode != 0 {
-			utils.Warning(fmt.Sprintf("component no. %v (%v) exited with code: %v", id, *c.Binary, exitCode))
+			utils.Warning(fmt.Sprintf("component %v exited with code: %v", componentIdentifier, exitCode))
 			output = ""
 		} else {
 			output = fmt.Sprintf("%v%v", c.Label, string(stdout))
@@ -38,4 +39,6 @@ func (c Component) Run(id int, out chan<- ComponentOutput) {
 			break
 		}
 	}
+
+	utils.Debug(fmt.Sprintf("exiting component %v run goroutine", componentIdentifier))
 }
