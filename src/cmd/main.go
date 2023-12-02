@@ -106,10 +106,14 @@ func main() {
 			printStatusBar(computeStatus(config.Components), *stdout)
 		case s := <-signalsChan:
 			utils.Debug(fmt.Sprintf("received signal: %v", s))
-			err = xorg.XSetRoot(xorg.DefaultRoot)
-			if err != nil {
-				utils.Warning(fmt.Sprintf("could not run xsetroot on shutdown: %v", err))
+
+			if !*stdout {
+				err = xorg.XSetRoot(xorg.DefaultRoot)
+				if err != nil {
+					utils.Warning(fmt.Sprintf("could not run xsetroot on shutdown: %v", err))
+				}
 			}
+
 			os.Exit(0)
 		case <-tickerChannel:
 			utils.Debug("status period ticker")
