@@ -63,7 +63,7 @@ func main() {
 	if *configPath == "" {
 		home := os.Getenv("HOME")
 		if home == "" {
-			utils.Failure("$HOME not set : could not establish default configuration file path and none was passed")
+			utils.Failure("$HOME not set: could not establish default configuration file path and none was passed")
 		}
 
 		*configPath = fmt.Sprintf("%v/.config/plstatus/config.json", home)
