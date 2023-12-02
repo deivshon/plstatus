@@ -45,7 +45,7 @@ Refer to `config.def.json` for an example configuration
 Clone the repository, edit the configuration file and run
 
 ```
-$ make all && sudo make install
+$ make release && sudo make install
 ```
 
 The default install path is `/usr/local/bin` and can be changed via the `INSTALL_PATH` environment variable
